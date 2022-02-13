@@ -1,0 +1,11 @@
+@use "settings.scss" as s;
+
+@mixin styles {
+  footer {
+    grid-area: footer;
+    color: var(--footerColor);
+    background-color: var(--footerBg);
+    font-size: s.$font-size;
+    line-height: s.$line-height;
+  }
+}

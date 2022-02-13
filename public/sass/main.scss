@@ -1,0 +1,75 @@
+@use "colors.scss";
+@use "settings.scss" as s;
+
+@use "header.scss" as header;
+@use "content.scss" as content;
+@use "footer.scss" as footer;
+
+@font-face {
+  font-family: "heebo";
+  src: url("../fonts/heebo.woff2") format("woff2"),
+    url("../fonts/heebo.woff") format("woff"),
+    url("../fonts/heebo.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header"
+    "content"
+    "footer";
+  font-size: 1em;
+  font-family: heebo, "Segoe UI", "Liberation Sans", sans-serif;
+  font-weight: normal;
+  overflow-y: auto;
+
+  a,
+  a:active,
+  a:visited {
+    text-decoration: none;
+    color: var(--linkColor);
+  }
+
+  a:hover {
+    color: var(--linkColorHover);
+  }
+
+  header,
+  main,
+  footer {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .column {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: s.$spacing;
+  }
+}
+
+@include header.styles;
+@include content.styles;
+@include footer.styles;

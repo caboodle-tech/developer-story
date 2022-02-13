@@ -1,0 +1,28 @@
+# Disable index view.
+Options -Indexes
+
+# Hide sensitive files.
+<Files ~ "\.(env|json|config|md|gitignore|gitattributes|lock|yml|xml)$">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Redirect all requests to the public directory.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Only needing for local develoment in my case.
+    RewriteBase /BU/cs-602/developer-story/
+    # If nothing or an index page is requested go to `public/index.php` and stop processing.
+    RewriteRule ^(\/||.*index\..*)$ public/index.php [L,QSA]
+    # If the URL already contains the `public/` directory go to URL and stop processing.
+    RewriteRule ^(.*public\/.*)$ $1 [L,QSA]
+    # If it appears this URL is for a resource (JS, CSS, etc.) prefix with `public/`.
+    RewriteCond %{REQUEST_URI} ^([\w\d\s\-\_\/\%]*)\.(?!php|htm|html).*$
+    # Go to the modified URL if the last rule triggered and stop processing.
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+    # Rewrite all remaing URLs to our apps MVC structure.
+    RewriteRule ^([\w\d\s\-\_\/\%]*)$ public/index.php?p=$1 [L,QSA]
+</IfModule>

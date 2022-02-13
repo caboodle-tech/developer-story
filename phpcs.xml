@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ruleset name="CaboodleTech">
+
+    <!-- Include the whole PEAR standard and exclude rules we don't use. -->
+    <rule ref="PEAR">
+        <exclude name="PEAR.Classes.ClassDeclaration.OpenBraceNewLine"/>
+        <exclude name="PEAR.Commenting.ClassComment"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingAuthorTag"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingCategoryTag"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingLicenseTag"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingLinkTag"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingPackageTag"/>
+        <exclude name="PEAR.Commenting.FileComment.MissingVersion"/>
+        <exclude name="PEAR.Commenting.InlineComment"/>
+        <exclude name="PEAR.Functions.FunctionDeclaration.BraceOnSameLine"/>
+        <exclude name="PEAR.NamingConventions.ValidFunctionName"/>
+        <exclude name="PEAR.NamingConventions.ValidVariableName"/>
+        <exclude name="PEAR.WhiteSpace.ScopeIndent"/>
+    </rule>
+
+    <!-- Fix indenting rule in switch statments. -->
+    <rule ref="Generic.WhiteSpace.ScopeIndent">
+        <properties>
+            <property name="indent" value="4"/>
+        </properties>
+    </rule>
+
+    <!-- Modify the line length warnings. -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120"/>
+            <property name="absoluteLineLimit" value="0"/>
+        </properties>
+    </rule>
+
+    <!-- Add WordPress formatting rules that I like -->
+    <rule ref="Generic.Formatting.MultipleStatementAlignment"></rule>
+    <rule ref="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned"></rule>
+</ruleset>

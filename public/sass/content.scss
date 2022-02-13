@@ -1,0 +1,10 @@
+@use "settings.scss" as s;
+
+@mixin styles {
+  main {
+    grid-area: content;
+    font-size: s.$font-size;
+    line-height: s.$line-height;
+    padding: s.$spacing 0;
+  }
+}

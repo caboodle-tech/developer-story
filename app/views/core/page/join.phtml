@@ -1,0 +1,29 @@
+<?php
+require absPath('app/views/core/head.phtml');
+require absPath('app/views/core/header.phtml');
+?>
+<div>
+<h1>Join</h1>
+<form method="post" action="./form/join" data-error="joinError" data-load="joinLoad">
+    <label>
+        Email:
+        <input type="email" name="email-1">
+    </label>
+    <label>
+        Retype Email:
+        <input type="email" name="email-2">
+    </label>
+    <label>
+        Password:
+        <input type="password" name="password-1">
+    </label>
+    <label>
+        Retype Password:
+        <input type="password" name="password-2">
+    </label>
+    <button type="button" is="button-form">
+        Create Account
+    </button>
+</form>
+<?php
+require absPath('app/views/core/footer.phtml');

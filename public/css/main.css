@@ -1,0 +1,308 @@
+:root {
+  --linkColor: #1a759f;
+  --linkColorHover: #1e86b6;
+  --borderColorLight: #e8e8e8;
+  --borderColorDark: #d4d4d4;
+  --boxShadow: 0 1px 2px hsla(0, 0%, 0%, 0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05),
+    0 2px 8px hsla(0, 0%, 0%, 0.05);
+  --contentBg: #ffffff;
+  --contentColor: #0c0d0e;
+  --contentAltColor: #ffffff;
+  --footerBg: #232629;
+  --footerColor: #b5babf;
+  --headerBg: #f8f9f9;
+  --headerBgHover: #e8ebeb;
+  --headerColor: #525960;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --borderColor: #e8e8e8;
+    --contentBg: #ffffff;
+    --contentColor: #0c0d0e;
+    --footerBg: #232629;
+    --footerColor: #b5babf;
+    --headerBg: #f8f9f9;
+    --headerColor: #525960;
+  }
+}
+@font-face {
+  font-family: "heebo";
+  src: url("../fonts/heebo.woff2") format("woff2"), url("../fonts/heebo.woff") format("woff"), url("../fonts/heebo.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: "header" "content" "footer";
+  font-size: 1em;
+  font-family: heebo, "Segoe UI", "Liberation Sans", sans-serif;
+  font-weight: normal;
+  overflow-y: auto;
+}
+body a,
+body a:active,
+body a:visited {
+  text-decoration: none;
+  color: var(--linkColor);
+}
+body a:hover {
+  color: var(--linkColorHover);
+}
+body header,
+body main,
+body footer {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+body .column {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+header {
+  grid-area: header;
+  color: var(--headerColor);
+  background-color: var(--headerBg);
+  font-size: 1.65rem;
+  line-height: 2.475rem;
+  border-bottom: 1px solid var(--borderColorLight);
+  box-shadow: var(--boxShadow);
+}
+header .column {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  grid-template-areas: "logo logo" "toggle nav";
+}
+header #logo-container {
+  grid-area: logo;
+  max-width: 300px;
+  margin: 0 auto;
+}
+header #logo-container a {
+  display: inline-block;
+}
+header #logo-container a object,
+header #logo-container a img,
+header #logo-container a svg {
+  max-width: 100%;
+  pointer-events: none;
+}
+header #nav-container {
+  grid-area: nav;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+header #nav-container ul {
+  display: inline-block;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+header #nav-container ul li {
+  display: inline-block;
+  margin-right: 0.35rem;
+  border: 1px solid var(--borderColorDark);
+  border-radius: 3px;
+  box-shadow: var(--boxShadow);
+  cursor: pointer;
+}
+header #nav-container ul li .icon {
+  padding-right: 5px;
+}
+header #nav-container ul li a {
+  display: inline-block;
+  padding: 5px 15px;
+  color: var(--headerColor);
+  text-decoration: none;
+}
+header #nav-container ul li a a:active,
+header #nav-container ul li a a:visited {
+  text-decoration: none;
+  color: var(--headerColor);
+}
+header #nav-container ul li:hover {
+  background-color: var(--headerBgHover);
+}
+header #dark-mode-container {
+  grid-area: toggle;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+header #dark-mode-container #dark-mode-toggle {
+  width: 46px;
+  height: 46px;
+  box-sizing: border-box;
+  padding: 12px;
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+header #dark-mode-container #dark-mode-toggle .sun {
+  width: 50%;
+  height: 50%;
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.6) rotate(0deg);
+  transition: transform 0.3s ease-in, opacity 0.2s ease-in 0.1s;
+  /*  white transparent for Safari  */
+  background: radial-gradient(circle, rgba(0, 0, 0, 0) 50%, var(--headerColor) 50%);
+}
+header #dark-mode-container #dark-mode-toggle .sun.visible {
+  pointer-events: auto;
+  opacity: 1;
+  transform: scale(1) rotate(180deg);
+  transition: transform 0.3s ease-in, opacity 0.2s ease-in 0.1s;
+}
+header #dark-mode-container #dark-mode-toggle .sun:before {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, var(--headerColor) 30%, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0) 50%, var(--headerColor) 50%);
+  transform: rotate(45deg);
+}
+header #dark-mode-container #dark-mode-toggle .moon {
+  width: 50%;
+  height: 50%;
+  pointer-events: none;
+  position: absolute;
+  left: 12.5%;
+  top: 18.75%;
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 50%;
+  box-shadow: 9px 3px 0px 0px var(--headerColor);
+  opacity: 0;
+  transform: scale(0.3) rotate(65deg);
+  transition: transform 0.3s ease-in, opacity 0.2s ease-in 0.1s;
+}
+header #dark-mode-container #dark-mode-toggle .moon .star {
+  position: absolute;
+  top: 25%;
+  left: 5%;
+  display: block;
+  width: 0px;
+  height: 0px;
+  border-right: 7px solid rgba(0, 0, 0, 0);
+  border-bottom: 5px solid var(--headerColor);
+  border-left: 7px solid rgba(0, 0, 0, 0);
+  transform: scale(0.55) rotate(35deg);
+  opacity: 0;
+  transition: all 0.2s ease-in 0.4s;
+}
+header #dark-mode-container #dark-mode-toggle .moon .star .small {
+  transform: scale(0.35) rotate(35deg);
+  position: relative;
+  top: 50%;
+  left: 37.5%;
+  opacity: 0;
+  transition: all 0.2s ease-in 0.45s;
+}
+header #dark-mode-container #dark-mode-toggle .moon .star:before {
+  border-bottom: 5px solid var(--headerColor);
+  border-left: 3px solid rgba(0, 0, 0, 0);
+  border-right: 3px solid rgba(0, 0, 0, 0);
+  position: absolute;
+  height: 0;
+  width: 0;
+  top: -3px;
+  left: -5px;
+  display: block;
+  content: "";
+  transform: rotate(-35deg);
+}
+header #dark-mode-container #dark-mode-toggle .moon .star:after {
+  position: absolute;
+  display: block;
+  color: var(--headerColor);
+  top: 0px;
+  left: -7px;
+  width: 0px;
+  height: 0px;
+  border-right: 7px solid rgba(0, 0, 0, 0);
+  border-bottom: 5px solid var(--headerColor);
+  border-left: 7px solid rgba(0, 0, 0, 0);
+  transform: rotate(-70deg);
+  content: "";
+}
+header #dark-mode-container #dark-mode-toggle .moon.visible {
+  pointer-events: auto;
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  transition: transform 0.3s ease-in, opacity 0.2s ease-in 0.1s;
+}
+header #dark-mode-container #dark-mode-toggle .moon.visible .star {
+  opacity: 0.8;
+  /*   transform: rotate(35deg); */
+}
+header #dark-mode-container #dark-mode-toggle .moon.visible .star.small {
+  opacity: 0.7;
+  transform: scale(0.45) rotate(35deg);
+}
+header #dark-mode-container #dark-mode-toggle:hover {
+  opacity: 0.8;
+}
+@media (min-width: 768px) {
+  header .column {
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    grid-template-areas: "logo nav toggle";
+  }
+  header #logo-container {
+    margin: 0;
+  }
+  header #nav-container {
+    justify-content: right;
+  }
+  header #dark-mode-container {
+    justify-content: right;
+    margin-left: 5px;
+  }
+}
+
+main {
+  grid-area: content;
+  font-size: 1.65rem;
+  line-height: 2.475rem;
+  padding: 15px 0;
+}
+
+footer {
+  grid-area: footer;
+  color: var(--footerColor);
+  background-color: var(--footerBg);
+  font-size: 1.65rem;
+  line-height: 2.475rem;
+}
+
+/*# sourceMappingURL=main.css.map */
