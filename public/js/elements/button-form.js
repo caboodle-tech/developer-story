@@ -41,13 +41,13 @@ class ButtonForm extends HTMLButtonElement {
             const { action } = this.form;
             const xhr = new XMLHttpRequest();
             const data = new FormData(this.form);
-            if (FormHandlers[this.errorCallback]) {
-                xhr.addEventListener('error', FormHandlers[this.errorCallback]);
+            if (Handlers[this.errorCallback]) {
+                xhr.addEventListener('error', Handlers[this.errorCallback]);
             } else {
                 xhr.addEventListener('error', this.error);
             }
-            if (FormHandlers[this.loadCallback]) {
-                xhr.addEventListener('load', FormHandlers[this.loadCallback]);
+            if (Handlers[this.loadCallback]) {
+                xhr.addEventListener('load', Handlers[this.loadCallback]);
             } else {
                 xhr.addEventListener('load', this.load);
             }

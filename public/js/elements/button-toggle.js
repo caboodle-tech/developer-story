@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 class ButtonToggle extends HTMLButtonElement {
 
     constructor() {
@@ -34,7 +35,12 @@ class ButtonToggle extends HTMLButtonElement {
         this.title = title;
     }
 
-    toggle() {
+    toggle(ignoreCallback = false) {
+        if (this.dataset.callback && ignoreCallback !== true) {
+            if (Handlers[this.dataset.callback]) {
+                Handlers[this.dataset.callback]();
+            }
+        }
         const on = this.querySelectorAll('.on');
         on.forEach((elem) => {
             elem.classList.toggle('visible');

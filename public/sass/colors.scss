@@ -1,4 +1,5 @@
 :root {
+  --darkMode: "off";
   --linkColor: #1a759f;
   --linkColorHover: #1e86b6;
   --borderColorLight: #e8e8e8;
@@ -17,12 +18,41 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --borderColor: #e8e8e8;
+    --darkMode: "on";
+  }
+
+  :root:not([data-dark-mode]) {
+    --linkColor: #1a759f;
+    --linkColorHover: #1e86b6;
+    --borderColorLight: #e8e8e8;
+    --borderColorDark: #d4d4d4;
+    --boxShadow: 0 1px 2px hsla(0, 0%, 0%, 0.05),
+      0 1px 4px hsla(0, 0%, 0%, 0.05), 0 2px 8px hsla(0, 0%, 0%, 0.05);
     --contentBg: #ffffff;
     --contentColor: #0c0d0e;
+    --contentAltColor: #ffffff;
     --footerBg: #232629;
     --footerColor: #b5babf;
     --headerBg: #f8f9f9;
+    --headerBgHover: #e8ebeb;
     --headerColor: #525960;
   }
+}
+
+/* The following rules should just be a copy of the `prefers-color-scheme: dark` colors. */
+[data-dark-mode="on"] {
+  --linkColor: #1a759f;
+  --linkColorHover: #1e86b6;
+  --borderColorLight: #e8e8e8;
+  --borderColorDark: #d4d4d4;
+  --boxShadow: 0 1px 2px hsla(0, 0%, 0%, 0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05),
+    0 2px 8px hsla(0, 0%, 0%, 0.05);
+  --contentBg: #ffffff;
+  --contentColor: #0c0d0e;
+  --contentAltColor: #ffffff;
+  --footerBg: #232629;
+  --footerColor: #b5babf;
+  --headerBg: red;
+  --headerBgHover: #e8ebeb;
+  --headerColor: #525960;
 }
