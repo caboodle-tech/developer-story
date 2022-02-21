@@ -27,7 +27,7 @@ class ButtonForm extends HTMLButtonElement {
 
     // eslint-disable-next-line class-methods-use-this
     error(evt) {
-        console.error(evt);
+        console.error(evt.target.responseText);
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -37,6 +37,9 @@ class ButtonForm extends HTMLButtonElement {
 
     submit() {
         if (this.form) {
+            if (!this.form.reportValidity()) {
+                return;
+            }
             const { method } = this.form;
             const { action } = this.form;
             const xhr = new XMLHttpRequest();
@@ -51,6 +54,7 @@ class ButtonForm extends HTMLButtonElement {
             } else {
                 xhr.addEventListener('load', this.load);
             }
+            xhr.form = this.form; // Reference the form in the XHR object.
             xhr.open(method, action);
             xhr.send(data);
         }

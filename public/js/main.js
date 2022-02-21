@@ -11,12 +11,20 @@ const getCSSCustomProp = (propKey) => {
 };
 
 Handlers.joinLoad = (evt) => {
-    console.log(evt.target.responseText);
-    window.location = './dashboard';
-};
-
-Handlers.joinError = (evt) => {
-    // TODO: Error message on page.
+    const { status } = evt.target;
+    if (status >= 200 && status < 300) {
+        if (evt.target.form.dataset.redirect) {
+            window.location = evt.target.form.dataset.redirect;
+        }
+    } else if (status >= 300 && status < 600) {
+        if (status === 409) {
+            // User already exists.
+        } else {
+            // Something doesn't match or is not filled out.
+        }
+    } else {
+        console.warn('A proper status code was not returned from the server. The joining form does not know how to handle this response.');
+    }
 };
 
 Handlers.toggleDarkMode = () => {
@@ -24,7 +32,7 @@ Handlers.toggleDarkMode = () => {
     if (document.documentElement.dataset.darkMode) {
         current = document.documentElement.dataset.darkMode;
     } else {
-        current = localStorage.getItem('dark-mode');
+        current = Cookies.get('dark-mode');
     }
     switch (current) {
         case null:
@@ -37,31 +45,6 @@ Handlers.toggleDarkMode = () => {
             current = 'on';
             break;
     }
-    localStorage.setItem('dark-mode', current);
+    Cookies.set('dark-mode', current);
     document.documentElement.setAttribute('data-dark-mode', current);
 };
-
-Handlers.setDarkMode = () => {
-    let current = localStorage.getItem('dark-mode');
-    if (!current) {
-        current = getCSSCustomProp('--darkMode');
-        localStorage.setItem('dark-mode', current);
-    }
-    document.documentElement.setAttribute('data-dark-mode', current);
-    let timeout = 5000;
-    const interval = setInterval(() => {
-        const toggle = document.getElementById('dark-mode-toggle');
-        if (toggle) {
-            if (current === 'on') {
-                toggle.toggle(true);
-            }
-            clearInterval(interval);
-            return;
-        }
-        timeout -= 100;
-        if (timeout <= 0) {
-            clearInterval(interval);
-        }
-    }, 100);
-};
-Handlers.setDarkMode();

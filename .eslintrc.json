@@ -25,6 +25,7 @@
                 "allowForLoopAfterthoughts": true
             }
         ],
+        "no-undef": "off",
         "padded-blocks": "off"
     }
 }

@@ -1,6 +1,11 @@
 <?php
+/**
+ * A helper module that simplifies data sanitization and manipulation.
+ * 
+ * Some methods here have been modified from WordPress' sanitation functions.
+ */
 
-namespace Controller\Core;
+namespace Module\Core;
 
 class Sanitizer {
 
@@ -29,26 +34,73 @@ class Sanitizer {
                 return (string)$var; // string
         }
     }
-
+    
+    /**
+     * Default method for sanitizing data.
+     *
+     * @param string $string The data to sanitize.
+     * 
+     * @return void
+     */
     public static function default($string) {
         return htmlspecialchars(strip_tags(trim($string)));
     }
 
-    public static function email($email) {
-        $email = trim($email);
+    /**
+     * Securely hash a password.
+     *
+     * @param string $password The password to hash.
+     * 
+     * @return string The hashed password.
+     */
+    public static function encryptPassword($password) {
+        $password = hash_hmac('sha1', $password, getConstant('PEPPER', 'devstory'));
+        return password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    /**
+     * Print a sanitized string.
+     *
+     * @param string $string The data you wish to print out.
+     * @param string $filter The sanitization filter to use on this data.
+     * 
+     * @return void
+     */
+    public static function print($string, $filter = 'default') {
+        if (strlen($string) === 0) {
+            echo '';
+            return;
+        }
+        $sanitized = $string;
+        switch($filter) {
+            default:
+                $sanitized = self::default($string);
+        }
+        echo $sanitized;
+    }
+
+    /**
+     * Verify if this string can be considered a safe and valid email.
+     *
+     * @param string $email An email to test.
+     * 
+     * @return boolean True if this string appears to be safe and valid email, false otherwise.
+     */
+    public static function validEmail($email) {
+        $sanitized = trim($email);
 
         // Test for the minimum length the email can be.
-        if (strlen($email) < 6) {
+        if (strlen($sanitized) < 6) {
             return false;
         }
 
         // Test for an @ character after the first position.
-        if (strpos($email, '@', 1) === false) {
+        if (strpos($sanitized, '@', 1) === false) {
             return false;
         }
 
         // Split out the local and domain parts.
-        list($local, $domain) = explode('@', $email, 2);
+        list($local, $domain) = explode('@', $sanitized, 2);
     
         // LOCAL PART:
         // Test for invalid characters.
@@ -104,26 +156,39 @@ class Sanitizer {
         $domain = implode('.', $new_subs);
     
         // Put the email back together.
-        $sanitized_email = $local . '@' . $domain;
+        $sanitized = $local . '@' . $domain;
 
         // One last check.
-        return filter_var($sanitized_email, FILTER_SANITIZE_EMAIL);
+        if (filter_var($sanitized, FILTER_SANITIZE_EMAIL) !== trim($email)) {
+            return false;
+        }
+        return true;
     }
 
-    public static function print($string, $filter = 'default') {
-        if (strlen($string) === 0) {
-            echo '';
-            return;
+    /**
+     * Verify if this string can be considered a safe and valid name.
+     *
+     * @param string $name A name to test.
+     * 
+     * @return boolean True if this string appears to be safe and name, false otherwise.
+     */
+    public static function validName($name) {
+        $sanitized = trim($name);
+        $sanitized = preg_replace('|[-~+_.?#=!&;,/:%@$\|*\'()\[\]\\x80-\\xff]|i', '', $sanitized);
+        if (strlen($sanitized) !== strlen($name)) {
+            return false;
         }
-        $sanitized = $string;
-        switch($filter) {
-            default:
-                $sanitized = self::default($string);
-        }
-        echo $sanitized;
+        return true;
     }
 
-    public static function url($url) {
+    /**
+     * Verify if this string can be considered a safe and valid URL.
+     *
+     * @param string $url A URL to test.
+     * 
+     * @return boolean True if this string appears to be safe and valid URL, false otherwise.
+     */
+    public static function validUrl($url) {
         $url = trim($url);
 
         // Test for the reasonable minimum length.
@@ -155,6 +220,22 @@ class Sanitizer {
 
         // One last check.
         return filter_var($url, FILTER_SANITIZE_URL);
+    }
+
+    /**
+     * Verify if this string can be considered a safe and valid vanity name (URL slug).
+     *
+     * @param string $vanity A vanity name to test.
+     * 
+     * @return boolean True if this string appears to be safe and valid vanity name, false otherwise.
+     */
+    public static function validVanity($vanity) {
+        $sanitized = trim($vanity);
+        $sanitized = preg_replace('/[^a-zA-Z0-9\-]/', '', $sanitized);
+        if (strlen($sanitized) !== strlen($vanity)) {
+            return false;
+        }
+        return true;
     }
 
 }

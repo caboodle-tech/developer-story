@@ -9,6 +9,13 @@ class ButtonToggle extends HTMLButtonElement {
 
     connectedCallback() {
         setTimeout(() => {
+            const set = this.querySelector('.visible');
+            if (!set) {
+                const fix = this.querySelector('.on');
+                if (fix) {
+                    fix.classList.add('visible');
+                }
+            }
             this.setAria();
         });
     }

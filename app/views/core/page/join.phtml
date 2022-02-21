@@ -4,26 +4,43 @@ require absPath('app/views/core/header.phtml');
 ?>
 <div>
 <h1>Join</h1>
-<form method="post" action="./form/join" data-error="joinError" data-load="joinLoad">
-    <label>
-        Email:
-        <input type="email" name="email-1">
-    </label>
-    <label>
-        Retype Email:
-        <input type="email" name="email-2">
-    </label>
-    <label>
-        Password:
-        <input type="password" name="password-1">
-    </label>
-    <label>
-        Retype Password:
-        <input type="password" name="password-2">
-    </label>
-    <button type="button" is="button-form">
-        Create Account
-    </button>
+<p>
+    Dev Story is a public website for developers to showcase their professional and volunteer experience. Before creating an account with us please keep the following in mind:
+</p>
+<ul>
+    <li>
+        <p>
+            Your name will be publicly visible online.
+        </p>
+    </li>
+    <li>
+        <p>
+            If you choose to allow it, your email will be publicly available.
+        </p>
+    </li>
+</ul>
+<form method="post" action="./form/join" data-load="joinLoad" data-redirect="./dashboard" autocomplete="off">
+    <h3>Name</h3>
+    <div class="row">
+        <input autocomplete="new-password" placeholder="First Name" type="text" name="first-name" aria-label="First Name" required>
+        <input autocomplete="new-password" placeholder="Middle Name (Optional)" type="text" name="middle-name" aria-label="Middle Name (optional)">
+        <input autocomplete="new-password" placeholder="Last Name" type="text" name="last-name" aria-label="Last Name" required>
+    </div>
+    <h3>Email</h3>
+    <div class="row">
+        <input autocomplete="new-password" placeholder="Email" type="email" name="email-1" aria-label="Email" required>
+        <input autocomplete="new-password" placeholder="Retype Email" type="email" name="email-2" aria-label="Retype Email" required>
+    </div>
+    <h3>Password</h3>
+    <div class="row">
+        <input autocomplete="new-password" placeholder="Password" type="password" name="password-1" aria-label="Password" required>
+        <input autocomplete="new-password" placeholder="Retype Password" type="password" name="password-2" aria-label="Retype Password" required>
+    </div>
+    <div class="row">
+        <button type="button" is="button-form">
+            Create Account
+        </button>
+    </div>
 </form>
 <?php
 require absPath('app/views/core/footer.phtml');

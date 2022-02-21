@@ -1,3 +1,5 @@
 app/uploads/
 config.php
 node_modules
+test/
+*.http
