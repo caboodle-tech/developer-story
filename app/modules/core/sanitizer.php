@@ -53,9 +53,19 @@ class Sanitizer {
      * 
      * @return string The hashed password.
      */
-    public static function encryptPassword($password) {
-        $password = hash_hmac('sha1', $password, getConstant('PEPPER', 'devstory'));
+    public static function hashPassword($password) {
         return password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    /**
+     * Add the sites pepper to the users password.
+     *
+     * @param string $password The password to pepper.
+     * 
+     * @return string The peppered password.
+     */
+    public static function pepperPassword($password) {
+        return hash_hmac('sha1', $password, getConstant('PEPPER', 'devstory'));
     }
 
     /**

@@ -155,6 +155,26 @@ if (!function_exists('outputResponse')) {
     }
 }
 
+if (!function_exists('requireToBeLoggedIn')) {
+    function requireToBeLoggedIn() {
+        global $Session;
+        if (!isset($Session->userId) && !isset($Session->loggedIn)) {
+            header('Location: ' . SITE_ROOT);
+            exit();
+        }
+        if ($Session->loggedIn !== true) {
+            header('Location: ' . SITE_ROOT);
+            exit();
+        }
+        global $Database;
+        $db = $Database->connect();
+        $result = $db->query("SELECT u.id, u.email, up.first_name AS fname, up.middle_name AS mname, up.last_name AS lname, up.vanity, up.vanity_set_date AS vanityChanged, up.profile_picture AS profilePicture FROM users AS u LEFT JOIN users_profile AS up ON u.id=up.id;");
+        $result = $result->fetch_assoc();
+        $db->close();
+        return (object) $result;
+    }
+}
+
 if (!function_exists('siteRoot')) {
     /**
      * Determine the sites root URL. Normally this is just the domain name but
@@ -208,5 +228,20 @@ if (!function_exists('responseType')) {
             }
         }
         return 'HTML';
+    }
+}
+
+if (!function_exists('getUserObj')) {
+    function getUserObj() {
+        global $Session;
+        if (!isset($Session->userId) && !isset($Session->loggedIn)) {
+            outputResponse('You are not authenticated!', 400);
+        }
+        global $Database;
+        $db = $Database->connect();
+        $result = $db->query("SELECT u.id, u.email, up.first_name AS fname, up.middle_name AS mname, up.last_name AS lname, up.vanity, up.vanity_set_date AS vanityChanged, up.profile_picture AS profilePicture FROM users AS u LEFT JOIN users_profile AS up ON u.id=up.id;");
+        $result = $result->fetch_assoc();
+        $db->close();
+        return (object) $result;
     }
 }

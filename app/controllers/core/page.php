@@ -23,7 +23,11 @@ class Page {
         } else {
             $this->data = $data;
         }
-        $this->setTemplate('');
+        $path = '';
+        if (!empty($data->trimUrl)) {
+            $path = 'app/views/core/page/' . $data->trimUrl . '.phtml';
+        }
+        $this->setTemplate($path);
     }
 
     /**

@@ -1,4 +1,5 @@
 @use "settings.scss" as s;
+@use "dashboard.scss" as dashboard;
 
 @mixin styles {
   main {
@@ -6,5 +7,7 @@
     font-size: s.$font-size;
     line-height: s.$line-height;
     padding: s.$spacing 0;
+
+    @include dashboard.styles;
   }
 }

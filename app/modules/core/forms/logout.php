@@ -21,9 +21,6 @@ class Logout extends \Module\Core\Forms {
      * @return void
      */
     public function processRequest() {
-        // Do not process request if we are not supposed to.
-        parent::processRequest();
-        
         global $Session;
         $Session->stop();
     }

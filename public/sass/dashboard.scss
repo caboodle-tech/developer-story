@@ -1,0 +1,27 @@
+@use "settings.scss" as s;
+
+@mixin styles {
+  #profile-container {
+    #profile-pic-container {
+      .frame {
+        img {
+          max-width: 150px;
+          height: auto;
+        }
+      }
+    }
+    #profile-info-container {
+      .row {
+        flex-direction: row;
+
+        .col:first-of-type {
+          flex-basis: 50px;
+        }
+
+        .col:last-of-type {
+          flex: 1;
+        }
+      }
+    }
+  }
+}

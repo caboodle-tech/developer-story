@@ -20,17 +20,19 @@ $Router   = new Controller\Core\Router();
 $Sanitize = new Module\Core\Sanitizer();
 $Session  = Controller\Core\Session::getInstance();
 
-$Session->start();
-
 $Router->route('', 'Controller\Core\Page\Home');
 $Router->route('/', 'Controller\Core\Page\Home');
-$Router->route('join', 'Controller\Core\Page\Join');
-$Router->route('logout', 'Controller\Core\Page\Logout');
+$Router->route('dashboard', 'Controller\Core\Page');
 $Router->route('form/*', 'Controller\Core\Form');
+$Router->route('join', 'Controller\Core\Page');
+$Router->route('login', 'Controller\Core\Page\Login');
+$Router->route('logout', 'Controller\Core\Page\Logout');
+$Router->route('user', 'Controller\Core\Page\User');
 // $Router->route('cv/:vanity', 'Controller\Core');
 // $Router->route('story/:vanity', 'Controller\Core');
 // $Router->route('user/:id', 'Controller\Core');
 
 // print_r($Router->getRoutingTable());
+$Session->start();
 
 $Router->navigate();

@@ -110,6 +110,15 @@ body .column {
   margin: 0 auto;
   padding: 15px;
 }
+body .column .row {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 768px) {
+  body .column .row {
+    flex-direction: row;
+  }
+}
 
 header {
   grid-area: header;
@@ -325,6 +334,19 @@ main {
   font-size: 1.65rem;
   line-height: 2.475rem;
   padding: 15px 0;
+}
+main #profile-container #profile-pic-container .frame img {
+  max-width: 150px;
+  height: auto;
+}
+main #profile-container #profile-info-container .row {
+  flex-direction: row;
+}
+main #profile-container #profile-info-container .row .col:first-of-type {
+  flex-basis: 50px;
+}
+main #profile-container #profile-info-container .row .col:last-of-type {
+  flex: 1;
 }
 
 footer {

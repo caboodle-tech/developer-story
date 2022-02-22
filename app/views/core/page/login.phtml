@@ -1,0 +1,22 @@
+<?php
+require absPath('app/views/core/head.phtml');
+require absPath('app/views/core/header.phtml');
+?>
+<form method="post" action="./form/login" data-load="loginLoad" data-redirect="./dashboard">
+    <div class="row">
+        <img src="images/icon-logo.svg" title="Dev Story" alt="Dev Story icon logo">
+    </div>
+    <div class="row">
+        <input placeholder="Email" type="email" name="email" aria-label="Email" required>
+    </div>
+    <div class="row">
+        <input placeholder="Password" type="password" name="password" aria-label="Password" required>
+    </div>
+    <div class="row">
+        <button type="button" is="button-form">
+            Login
+        </button>
+    </div>
+</form>
+<?php
+require absPath('app/views/core/footer.phtml');

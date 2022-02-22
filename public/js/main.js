@@ -27,6 +27,35 @@ Handlers.joinLoad = (evt) => {
     }
 };
 
+Handlers.loginLoad = (evt) => {
+    const { status } = evt.target;
+    if (status >= 200 && status < 300) {
+        if (evt.target.form.dataset.redirect) {
+            window.location = evt.target.form.dataset.redirect;
+        }
+    } else if (status >= 300 && status < 600) {
+        // Bad credentials
+    } else {
+        console.warn('A proper status code was not returned from the server. The login form does not know how to handle this response.');
+    }
+};
+
+Handlers.profileLoad = (evt) => {
+    const { status } = evt.target;
+    console.log(evt.target.response);
+    if (status >= 200 && status < 300) {
+        //
+    } else if (status >= 300 && status < 600) {
+        if (status === 409) {
+            // User already exists.
+        } else {
+            // Something doesn't match or is not filled out.
+        }
+    } else {
+        console.warn('A proper status code was not returned from the server.');
+    }
+};
+
 Handlers.toggleDarkMode = () => {
     let current = '';
     if (document.documentElement.dataset.darkMode) {

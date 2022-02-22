@@ -1,0 +1,60 @@
+<?php
+$User = requireToBeLoggedIn();
+require absPath('app/views/core/head.phtml');
+require absPath('app/views/core/header.phtml');
+?>
+<form method="post" action="./form/profile" id="profile-container" data-load="profileLoad" data-reload="true" data-disabled="true">
+    <div id="profile-pic-container">
+        <div class="frame">
+<?php
+$src = 'images/camera.svg';
+if (!empty($User->profilePicture)) {
+    $src = $User->profilePicture;
+}
+?>
+            <img src="<?php echo $src; ?>" title="Profile picture" alt="Profile picture">
+            <input type="file" name="picture" accept=".png,.jpg,.jpeg,.webp">
+        </div>
+    </div>
+    <div id="profile-info-container">
+        <div class="row">
+            <div class="col">
+                <i class="icon fas fa-address-card"></i>
+            </div>
+            <div class="col">
+                <input type="text" placeholder="First Name" name="first-name" value="<?php echo $User->fname; ?>" required>
+                <input type="text" placeholder="Middle Name" name="middle-name" value="<?php echo $User->mname; ?>">
+                <input type="text" placeholder="Last Name" name="last-name" value="<?php echo $User->lname; ?>" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <i class="icon fas fa-envelope"></i>
+            </div>
+            <div class="col">
+                <input type="email" placeholder="Email" name="email" value="<?php echo $User->email; ?>" required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <i class="icon fas fa-link"></i>
+            </div>
+            <div class="col">
+                <input type="text" placeholder="Vanity URL Slug" name="vanity" value="<?php echo $User->vanity; ?>">
+            </div>
+        </div>
+        <div class="row">
+            <button type="button" is="button-form">
+                <i class="fas fa-pencil"></i> Edit Account
+                <data>
+                    <i class="fas fa-save"></i> Save Changes
+                </data>
+            </button>
+            <button type="button" class="cancel-button">
+                Cancel Changes
+            </button>
+        </div>
+    </div>
+</form>
+<?php
+require absPath('app/views/core/footer.phtml');

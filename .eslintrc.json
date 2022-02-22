@@ -11,6 +11,7 @@
         "ecmaVersion": 13
     },
     "rules": {
+        "class-methods-use-this": "off",
         "comma-dangle": "off",
         "indent": [
             "error",

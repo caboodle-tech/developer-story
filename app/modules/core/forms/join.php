@@ -73,7 +73,7 @@ class Join extends \Module\Core\Forms {
         $mname = trim($mname);
         $lname = trim($lname);
         $email = strip_tags($email1);
-        $pass  = $Sanitize->encryptPassword($pass1);
+        $pass  = $Sanitize->hashPassword($Sanitize->pepperPassword($pass1));
 
         $stmt = $db->prepare("SELECT COUNT(email) AS count FROM `users` WHERE `email`=?;");
         $stmt->bind_param('s', $email);
@@ -81,22 +81,38 @@ class Join extends \Module\Core\Forms {
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
-            $this->returnError('There was an error attempting to connect to the database.', 500);
+            $this->returnError('There was an error attempting to query the database.', 500);
         }
 
         $count = $stmt->get_result()->fetch_assoc();
         if (intval($count['count']) > 0) {
             $this->returnError('User already exists.', 409);
-        } 
+        }
+        
+        $db->begin_transaction();
 
-        $stmt = $db->prepare("INSERT INTO `users` (`id`, `email`, `password`, `first_name`, `middle_name`, `last_name`) VALUES (?, ?, ?, ?, ?, ?);");
-        $stmt->bind_param('ssssss', $id, $email, $pass, $fname, $mname, $lname);
+        $stmt = $db->prepare("INSERT INTO `users` (`id`, `email`, `password`) VALUES (?, ?, ?);");
+        $stmt->bind_param('sss', $id, $email, $pass);
         $stmt->execute();
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
+            $db->rollback();
             $this->returnError('There was an error attempting to save the user.', 500);
         }
+        $stmt->free_result();
+
+        $stmt = $db->prepare("INSERT INTO `users_profile` (`id`, `first_name`, `middle_name`, `last_name`) VALUES (?, ?, ?, ?);");
+        $stmt->bind_param('ssss', $id, $fname, $mname, $lname);
+        $stmt->execute();
+
+        if ($stmt->errno) {
+            // TODO: log this error $stmt->error;
+            $db->rollback();
+            $this->returnError('There was an error attempting to save the user profile.', 500);
+        }
+        $stmt->free_result();
+        $db->commit();
 
         global $Session;
 
