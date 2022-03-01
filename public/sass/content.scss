@@ -8,6 +8,14 @@
     line-height: s.$line-height;
     padding: s.$spacing 0;
 
+    .column {
+      .notice {
+        display: inline-block;
+        border-width: 1px;
+        border-style: solid;
+      }
+    }
+
     @include dashboard.styles;
   }
 }

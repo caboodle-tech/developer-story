@@ -44,7 +44,6 @@ if (!isset($Session->loggedIn)) {
 ?>
         </nav>
 <?php
-
 $sun = '';
 $moon = '';
 if (isset($_COOKIE['dark-mode'])) {
@@ -68,4 +67,7 @@ if (isset($_COOKIE['dark-mode'])) {
     </div>
 </header>
 <main>
+<?php
+readOnlyMode();
+?>
     <div class="column">

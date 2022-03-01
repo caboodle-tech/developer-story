@@ -23,18 +23,18 @@ class Profile extends \Module\Core\Forms {
         $db = $Database->connect();
 
         if ($db === false) {
-            $this->returnError('Could not connect to the database.', 500);
+            outputResponse('Could not connect to the database.', 500);
         }
 
         global $Session;
 
-        $stmt = $db->prepare("SELECT `profile_picture` AS picture FROM `users_profile` WHERE `id`=? LIMIT 1;");
+        $stmt = $db->prepare("SELECT `profile_picture` AS picture FROM `user_profile` WHERE `id`=? LIMIT 1;");
         $stmt->bind_param('s', $Session->userId);
         $stmt->execute();
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
-            $this->returnError('There was an error attempting to query the database.', 500);
+            outputResponse('There was an error attempting to query the database.', 500);
         }
 
         $data = $stmt->get_result()->fetch_assoc();
@@ -78,23 +78,23 @@ class Profile extends \Module\Core\Forms {
         global $Sanitize;
 
         if (empty($fname) || empty($lname) || empty($email)) {
-            $this->returnError('One or more required form fields are empty.');
+            outputResponse('One or more required form fields are empty.', 400);
         }
 
         if (!$Sanitize->validName($fname) || !$Sanitize->validName($mname) || !$Sanitize->validName($lname)) {
-            $this->returnError('Invalid characters detected in your name.');
+            outputResponse('Invalid characters detected in your name.', 400);
         }
 
         if (!$Sanitize->validEmail($email)) {
-            $this->returnError('Invalid email provided.');
+            outputResponse('Invalid email provided.', 400);
         }
 
         if (!$Sanitize->validVanity($vanity)) {
-            $this->returnError('Invalid vanity provided.');
+            outputResponse('Invalid vanity provided.', 400);
         }
 
         if (!$this->isPictureValid()) {
-            $this->returnError('Invalid file type for profile picture.');
+            outputResponse('Invalid file type for profile picture.', 400);
         }
 
         $picture = $this->savePicture();
@@ -108,12 +108,12 @@ class Profile extends \Module\Core\Forms {
         $db = $Database->connect();
 
         if ($db === false) {
-            $this->returnError('Could not connect to the database.', 500);
+            outputResponse('Could not connect to the database.', 500);
         }
 
         // TODO: Fix vanity!!! Needs sperate update statment?
 
-        $stmt = $db->prepare("UPDATE `users_profile` SET `first_name`=?,`middle_name`=?, `last_name`=?, `vanity`=?, `vanity_set_date`=SYSDATE(), `profile_picture`=? WHERE `id`=?;");
+        $stmt = $db->prepare("UPDATE `user_profile` SET `first_name`=?,`middle_name`=?, `last_name`=?, `vanity`=?, `vanity_set_date`=SYSDATE(), `profile_picture`=? WHERE `id`=?;");
         $stmt->bind_param('ssssss', $fname, $mname, $lname, $vanity, $picture, $Session->userId);
         $stmt->execute();
 

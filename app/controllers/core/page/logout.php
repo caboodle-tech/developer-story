@@ -23,9 +23,6 @@ class Logout extends \Controller\Core\Page {
     public function render() {
         $Logout = new \Module\Core\Forms\Logout();
         $Logout->processRequest();
-        http_response_code(200);
-        header("Location: ./");
-        exit();
     }
 
 }

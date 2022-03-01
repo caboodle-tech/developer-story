@@ -16,23 +16,21 @@ class Logout extends \Module\Core\Forms {
     }
 
     /**
-     * Handle form submissions to this module.
+     * The Logout controller will call this method when a
+     * proper logout request is made.
      *
      * @return void
      */
     public function processRequest() {
         global $Session;
         $Session->stop();
+        // If this request was from a web browser redirect to the home page.
+        if (RESPONSE_TYPE === 'HTML') {
+            header("Location: ./");
+            exit();
+        }
+        // Respond to an API request.
+        outputResponse('Logout successful.', 200);
     }
 
-}
-
-/**
- * When accessed directly and not by a controller we need to instantiate the class
- * ourselves and call the `processRequest` method. This is for API calls.
- */
-$Logout = new \Module\Core\Forms\Logout();
-
-if (strtoupper($_SERVER['REQUEST_METHOD']) === 'DELETE') {
-    $Logout->processRequest();
 }

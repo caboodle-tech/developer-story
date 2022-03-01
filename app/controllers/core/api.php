@@ -1,18 +1,18 @@
 <?php
 /**
- * A catch all controller that the Router sends form submissions to. Form will
- * attempt to locate the correct form and pass the request onto it; see `setModule`
- * for how this is done.
+ * A catch all controller that the Router sends third party API requests to. Api
+ * will attempt to locate the correct handler and pass the request onto it; see
+ * `setModule` for how this is done.
  */
 
 namespace Controller\Core;
 
-class Form extends Page {
+class Api extends Page {
 
     protected $module = '';
 
     /**
-     * Instantiate a new instance of Form.
+     * Instantiate a new instance of Oauth.
      *
      * @param object $data The Router data object containing information of the active request.
      */
@@ -27,14 +27,6 @@ class Form extends Page {
      * @return void
      */
     public function render() {
-        /**
-         * Do not allow direct access to form handlers. Silently redirect the
-         * user back to the home page and do not alert them of anything.
-         */
-        if (strtoupper($_SERVER['REQUEST_METHOD']) === 'GET') {
-            header('Location: ' . SITE_ROOT);
-            exit();
-        }
         if (class_exists($this->module)) {
             $handler = new $this->module();
             $handler->processRequest();
@@ -47,19 +39,18 @@ class Form extends Page {
     /**
      * Translates the requested URL into the class path (namespace) of this handler.
      * 
-     * On the front end forms should use `actions` that start with `form/` and
-     * contain the relative path to the class from the `app/modules/core/forms/`
-     * directory. Use underscores (_) as directory separators.
+     * On the front end all api routes should start with `api/` and follow
+     * with the specific module used to handle this api request.
      * 
      * Examples:
      * 
-     * An `action` of `./form/join` becomes '\Modules\Core\Forms\Join.php'.
-     * An `action` of `./form/hr_new-hire_info` becomes '\Modules\Core\Forms\Hr\NewHire\Info'.
+     * `./oauth/so` becomes '\Modules\Core\Api\So.php'.
+     * `./oauth/hr/employee` becomes '\Modules\Core\Api\Hr\Employee'.
      *
      * @return void
      */
     protected function setModule() {
-        $class = str_replace('form/', 'module/core/forms/', $this->data->trimUrl);
+        $class = str_replace('api/', 'module/core/api/', $this->data->trimUrl);
         $class = str_replace('_', '/', $class);
         $class = explode('/', $class);
         foreach ($class as $index => $val) {

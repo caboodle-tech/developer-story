@@ -3,8 +3,9 @@ class ButtonToggle extends HTMLButtonElement {
 
     constructor() {
         super();
+        this.type = 'button';
         this.classList.add('button-toggle');
-        this.addEventListener('click', this.toggle);
+        this.addEventListener('click', this.toggle.bind(this));
     }
 
     connectedCallback() {
@@ -15,6 +16,19 @@ class ButtonToggle extends HTMLButtonElement {
                 if (fix) {
                     fix.classList.add('visible');
                 }
+            }
+            if (this.classList.contains('toggle')) {
+                const on = this.querySelector('.on');
+                if (on) {
+                    on.style.display = 'none';
+                }
+                const off = this.querySelector('.off');
+                if (off) {
+                    off.style.display = 'none';
+                }
+                const slider = document.createElement('span');
+                slider.classList.add('slider');
+                this.appendChild(slider);
             }
             this.setAria();
         });
@@ -43,11 +57,6 @@ class ButtonToggle extends HTMLButtonElement {
     }
 
     toggle(ignoreCallback = false) {
-        if (this.dataset.callback && ignoreCallback !== true) {
-            if (Handlers[this.dataset.callback]) {
-                Handlers[this.dataset.callback]();
-            }
-        }
         const on = this.querySelectorAll('.on');
         on.forEach((elem) => {
             elem.classList.toggle('visible');
@@ -57,6 +66,14 @@ class ButtonToggle extends HTMLButtonElement {
             elem.classList.toggle('visible');
         });
         this.setAria();
+        if (this.classList.contains('toggle')) {
+            this.classList.toggle('checked');
+        }
+        if (this.dataset.callback && ignoreCallback !== true) {
+            if (Handlers[this.dataset.callback]) {
+                Handlers[this.dataset.callback]();
+            }
+        }
     }
 }
 

@@ -36,36 +36,36 @@ class Join extends \Module\Core\Forms {
         if (empty($fname) || empty($lname) || empty($email1)
             || empty($email2) || empty($pass1) || empty($pass2)
         ) {
-            $this->returnError('One or more required form fields are empty.');
+            outputResponse('One or more required form fields are empty.', 400);
         }
 
         global $Sanitize;
 
         if (!$Sanitize->validName($fname) || !$Sanitize->validName($mname) || !$Sanitize->validName($lname)) {
-            $this->returnError('Invalid characters detected in your name.');
+            outputResponse('Invalid characters detected in your name.', 400);
         }
 
         if (!$Sanitize->validEmail($email1)) {
-            $this->returnError('Invalid email provided.');
+            outputResponse('Invalid email provided.', 400);
         }
 
         if ($email1 !== $email2) {
-            $this->returnError('Emails do not match.');
+            outputResponse('Emails do not match.', 400);
         }
 
         if (strlen($pass1) < 8) {
-            $this->returnError('Password must be 8 characters or more.');
+            outputResponse('Password must be 8 characters or more.', 400);
         }
 
         if ($pass1 !== $pass2) {
-            $this->returnError('Passwords do not match.');
+            outputResponse('Passwords do not match.', 400);
         }
 
         global $Database;
         $db = $Database->connect();
 
         if ($db === false) {
-            $this->returnError('Could not connect to the database.', 500);
+            outputResponse('Could not connect to the database.', 500);
         }
 
         $id    = $Database->newId();
@@ -75,43 +75,55 @@ class Join extends \Module\Core\Forms {
         $email = strip_tags($email1);
         $pass  = $Sanitize->hashPassword($Sanitize->pepperPassword($pass1));
 
-        $stmt = $db->prepare("SELECT COUNT(email) AS count FROM `users` WHERE `email`=?;");
+        $stmt = $db->prepare("SELECT COUNT(email) AS count FROM `user` WHERE `email`=?;");
         $stmt->bind_param('s', $email);
         $stmt->execute();
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
-            $this->returnError('There was an error attempting to query the database.', 500);
+            outputResponse('There was an error attempting to query the database.', 500);
         }
 
         $count = $stmt->get_result()->fetch_assoc();
         if (intval($count['count']) > 0) {
-            $this->returnError('User already exists.', 409);
+            outputResponse('User already exists.', 409);
         }
         
         $db->begin_transaction();
 
-        $stmt = $db->prepare("INSERT INTO `users` (`id`, `email`, `password`) VALUES (?, ?, ?);");
+        $stmt = $db->prepare("INSERT INTO `user` (`id`, `email`, `password`) VALUES (?, ?, ?);");
         $stmt->bind_param('sss', $id, $email, $pass);
         $stmt->execute();
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
             $db->rollback();
-            $this->returnError('There was an error attempting to save the user.', 500);
+            outputResponse('There was an error attempting to save the user.', 500);
         }
         $stmt->free_result();
 
-        $stmt = $db->prepare("INSERT INTO `users_profile` (`id`, `first_name`, `middle_name`, `last_name`) VALUES (?, ?, ?, ?);");
+        $stmt = $db->prepare("INSERT INTO `user_profile` (`id`, `first_name`, `middle_name`, `last_name`) VALUES (?, ?, ?, ?);");
         $stmt->bind_param('ssss', $id, $fname, $mname, $lname);
         $stmt->execute();
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
             $db->rollback();
-            $this->returnError('There was an error attempting to save the user profile.', 500);
+            outputResponse('There was an error attempting to save the user profile.', 500);
         }
         $stmt->free_result();
+
+        $stmt = $db->prepare("INSERT INTO `user_connections` (`id`, `connected`) VALUES (?, '{\"connections\": {}}');");
+        $stmt->bind_param('s', $id);
+        $stmt->execute();
+
+        if ($stmt->errno) {
+            // TODO: log this error $stmt->error;
+            $db->rollback();
+            outputResponse('There was an error attempting to save the user connections.', 500);
+        }
+        $stmt->free_result();
+
         $db->commit();
 
         global $Session;
@@ -122,14 +134,4 @@ class Join extends \Module\Core\Forms {
         outputResponse('User created successfully.', 201);
     }
 
-}
-
-/**
- * When accessed directly and not by a controller we need to instantiate the class
- * ourselves and call the `processRequest` method. This is for API calls.
- */
-$Join = new \Module\Core\Forms\Join();
-
-if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
-    $Join->processRequest();
 }

@@ -7,6 +7,8 @@ require '../config.php';
 require '../app/includes/helpers.php';
 require '../app/controllers/core/autoloader.php';
 
+define('REQUEST_TYPE', strtoupper($_SERVER['REQUEST_METHOD']));
+define('RESPONSE_TYPE', responseType());
 define('ROOT', dirname(__DIR__));
 define('SEP', DIRECTORY_SEPARATOR);
 
@@ -24,10 +26,10 @@ $Router->route('', 'Controller\Core\Page\Home');
 $Router->route('/', 'Controller\Core\Page\Home');
 $Router->route('dashboard', 'Controller\Core\Page');
 $Router->route('form/*', 'Controller\Core\Form');
+$Router->route('api/*', 'Controller\Core\Api');
 $Router->route('join', 'Controller\Core\Page');
 $Router->route('login', 'Controller\Core\Page\Login');
 $Router->route('logout', 'Controller\Core\Page\Logout');
-$Router->route('user', 'Controller\Core\Page\User');
 // $Router->route('cv/:vanity', 'Controller\Core');
 // $Router->route('story/:vanity', 'Controller\Core');
 // $Router->route('user/:id', 'Controller\Core');

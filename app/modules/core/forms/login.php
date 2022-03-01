@@ -29,39 +29,39 @@ class Login extends \Module\Core\Forms {
         $pass  = $_POST['password'];
 
         if (empty($email) || empty($pass)) {
-            $this->returnError('One or more required form fields are empty.');
+            outputResponse('One or more required form fields are empty.', 400);
         }
 
         global $Sanitize;
 
         if (!$Sanitize->validEmail($email)) {
-            $this->returnError('Invalid email provided.');
+            outputResponse('Invalid email provided.', 400);
         }
 
         if (strlen($pass) < 8) {
-            $this->returnError('Password must be 8 characters or more.');
+            outputResponse('Password must be 8 characters or more.', 400);
         }
 
         global $Database;
         $db = $Database->connect();
 
         if ($db === false) {
-            $this->returnError('Could not connect to the database.', 500);
+            outputResponse('Could not connect to the database.', 500);
         }
 
-        $stmt = $db->prepare("SELECT `id`, `password`, `totp` FROM `users` WHERE `email`=? LIMIT 1;");
+        $stmt = $db->prepare("SELECT `id`, `password`, `totp` FROM `user` WHERE `email`=? LIMIT 1;");
         $stmt->bind_param('s', $email);
         $stmt->execute();
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
-            $this->returnError('There was an error attempting to query the database.', 500);
+            outputResponse('There was an error attempting to query the database.', 500);
         }
 
         $data = $stmt->get_result();
 
         if (intval($data->num_rows) < 1) {
-            $this->returnError('Email or password does not match our records.');
+            outputResponse('Email or password does not match our records.', 400);
         }
 
         $data = $data->fetch_assoc();
@@ -69,7 +69,7 @@ class Login extends \Module\Core\Forms {
         $pass = $Sanitize->pepperPassword($pass);
 
         if (!password_verify($pass, $data['password'])) {
-            $this->returnError('Email or password does not match our records.');
+            outputResponse('Email or password does not match our records.', 400);
         }
 
         // TODO: Perform OTP first instead of logging in if that is enabled.
@@ -82,14 +82,4 @@ class Login extends \Module\Core\Forms {
         outputResponse('Signed in successfully.', 200);
     }
 
-}
-
-/**
- * When accessed directly and not by a controller we need to instantiate the class
- * ourselves and call the `processRequest` method. This is for API calls.
- */
-$Login = new \Module\Core\Forms\Login();
-
-if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
-    $Login->processRequest();
 }

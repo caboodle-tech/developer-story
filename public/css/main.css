@@ -1,19 +1,29 @@
 :root {
   --darkMode: "off";
-  --linkColor: #1a759f;
-  --linkColorHover: #1e86b6;
-  --borderColorLight: #e8e8e8;
   --borderColorDark: #d4d4d4;
+  --borderColorLight: #e8e8e8;
   --boxShadow: 0 1px 2px hsla(0, 0%, 0%, 0.05), 0 1px 4px hsla(0, 0%, 0%, 0.05),
     0 2px 8px hsla(0, 0%, 0%, 0.05);
+  --contentAltColor: #ffffff;
   --contentBg: #ffffff;
   --contentColor: #0c0d0e;
-  --contentAltColor: #ffffff;
   --footerBg: #232629;
   --footerColor: #b5babf;
   --headerBg: #f8f9f9;
   --headerBgHover: #e8ebeb;
+  --toggleBg: #f5f5f5;
+  --sliderBg: #d4d4d4;
+  --toggleCheckedBg: #c4fbb8;
+  --sliderCheckedBg: #72ba76;
   --headerColor: #525960;
+  --linkColor: #1a759f;
+  --linkColorHover: #1e86b6;
+  --noticeBg: #fffacd;
+  --noticeBorder: #cab988;
+  --noticeColor: #584100;
+  --errorBg: #f8d7da;
+  --errorBorder: #f5c6cb;
+  --errorColor: #721c24;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -118,6 +128,75 @@ body .column .row {
   body .column .row {
     flex-direction: row;
   }
+}
+body .notice {
+  background-color: var(--noticeBg);
+  border-color: var(--noticeBorder);
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-top-style: solid;
+  border-bottom-style: solid;
+  box-shadow: var(--boxShadow);
+  color: var(--noticeColor);
+  padding: 15px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+body .notice:first-letter {
+  text-transform: capitalize;
+}
+body .error {
+  background-color: var(--errorBg);
+  border-color: var(--errorBorder);
+  color: var(--errorColor);
+}
+body .toggle {
+  position: relative;
+  top: -5px;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border-radius: 3px;
+  border: 1px solid var(--borderColorDark);
+  box-shadow: var(--boxShadow);
+  background-color: var(--toggleBg);
+  overflow: hidden;
+  cursor: pointer;
+}
+body .toggle .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+body .toggle .slider:before {
+  position: absolute;
+  content: "";
+  height: 19px;
+  width: 19px;
+  left: 4px;
+  bottom: 4px;
+  border-radius: 2px;
+  background-color: var(--sliderBg);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+body .toggle.checked {
+  background-color: var(--toggleCheckedBg);
+}
+body .toggle.checked .slider {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+body .toggle.checked .slider:before {
+  background-color: var(--sliderCheckedBg);
 }
 
 header {
@@ -334,6 +413,11 @@ main {
   font-size: 1.65rem;
   line-height: 2.475rem;
   padding: 15px 0;
+}
+main .column .notice {
+  display: inline-block;
+  border-width: 1px;
+  border-style: solid;
 }
 main #profile-container #profile-pic-container .frame img {
   max-width: 150px;

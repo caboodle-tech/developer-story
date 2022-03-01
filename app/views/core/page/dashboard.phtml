@@ -1,5 +1,6 @@
 <?php
 $User = requireToBeLoggedIn();
+
 require absPath('app/views/core/head.phtml');
 require absPath('app/views/core/header.phtml');
 ?>
@@ -56,5 +57,18 @@ if (!empty($User->profilePicture)) {
         </div>
     </div>
 </form>
+<hr>
+<p>
+    The following accounts can be linked automatically to your developer story. If you would like to link an account toggle the connection on and then follow the on screen instructions.
+</p>
 <?php
+if (ERROR_FOR === 'profile_connections') {
+    showError();
+}
+if (NOTICE_FOR === 'profile_connections') {
+    showNotice();
+}
+
+require absPath('app/views/core/forms/so/connection.phtml');
+
 require absPath('app/views/core/footer.phtml');

@@ -55,6 +55,7 @@ class ButtonForm extends HTMLButtonElement {
         this.form.reset();
         const inputs = this.form.querySelectorAll('input');
         inputs.forEach((input) => {
+            // eslint-disable-next-line no-param-reassign
             input.disabled = true;
         });
         this.form.dataset.disabled = true;
@@ -82,6 +83,7 @@ class ButtonForm extends HTMLButtonElement {
         if (this.form.dataset.disabled && this.getBoolean(this.form.dataset.disabled)) {
             const inputs = this.form.querySelectorAll('input');
             inputs.forEach((input) => {
+                // eslint-disable-next-line no-param-reassign
                 input.disabled = true;
             });
 
@@ -135,6 +137,7 @@ class ButtonForm extends HTMLButtonElement {
         if (this.getBoolean(this.form.dataset.disabled)) {
             const inputs = this.form.querySelectorAll('input');
             inputs.forEach((input) => {
+                // eslint-disable-next-line no-param-reassign
                 input.disabled = false;
             });
             this.form.dataset.disabled = false;

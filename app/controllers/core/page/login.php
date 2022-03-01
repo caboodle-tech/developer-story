@@ -22,6 +22,9 @@ class Login extends \Controller\Core\Page {
      */
     public function render() {
         global $Session;
+        if (RESPONSE_TYPE !== 'HTML') {
+            outputResponse('This is a web page and not a valid API endpoint.', 400);
+        }
         /**
          * Do not let logged in users view the login page again.
          */

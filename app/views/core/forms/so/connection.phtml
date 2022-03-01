@@ -1,0 +1,26 @@
+<?php
+if (isset($User->connections->so)) {
+    $token = $User->connections->so->accessToken;
+?>
+<form method="get" action="https://api.stackexchange.com/2.3/apps/<?php echo $token; ?>/de-authenticate" data-load="<?php echo SITE_ROOT . 'api/so_oauth'; ?>">
+    <button class="toggle checked" is="button-toggle" data-callback="profileDisconnect">
+        <div class="off" data-aria="Link Stack Overflow"></div>
+        <div class="on visible" data-aria="Disconnect Stack Overflow"></div>
+    </button>
+    <i class="fab fa-stack-overflow"></i> Stack Overflow
+</form>
+<?php
+} else {
+?>
+<form method="get" action="https://stackoverflow.com/oauth">
+    <input type="hidden" name="client_id" value="22934">
+    <input type="hidden" name="scope" value="no_expiry">
+    <input type="hidden" name="redirect_uri" value="<?php echo SITE_ROOT . 'api/so_oauth'; ?>">
+    <button class="toggle" is="button-toggle" data-callback="profileConnect">
+        <div class="off visible" data-aria="Link Stack Overflow"></div>
+        <div class="on" data-aria="Disconnect Stack Overflow"></div>
+    </button>
+    <i class="fab fa-stack-overflow"></i> Stack Overflow
+</form>
+<?php
+}
