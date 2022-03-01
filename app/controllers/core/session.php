@@ -34,10 +34,11 @@ class Session {
      * 
      * @return mixed The value stored at this property if it exists.
      */
-    public function __get($name) {
+    public function &__get($name) {
         if (isset($_SESSION[$name])) {
             return $_SESSION[$name];
         }
+        return null;
     }
     
     /**

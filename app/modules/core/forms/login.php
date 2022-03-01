@@ -25,6 +25,7 @@ class Login extends \Module\Core\Forms {
         // Do not process request if we are not supposed to.
         parent::processRequest();
 
+        // Check that login information is all valid:
         $email = trim($_POST['email']);
         $pass  = $_POST['password'];
 
@@ -42,12 +43,9 @@ class Login extends \Module\Core\Forms {
             outputResponse('Password must be 8 characters or more.', 400);
         }
 
+        // Connect to database and check users authenticity.
         global $Database;
         $db = $Database->connect();
-
-        if ($db === false) {
-            outputResponse('Could not connect to the database.', 500);
-        }
 
         $stmt = $db->prepare("SELECT `id`, `password`, `totp` FROM `user` WHERE `email`=? LIMIT 1;");
         $stmt->bind_param('s', $email);
@@ -55,30 +53,30 @@ class Login extends \Module\Core\Forms {
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
-            outputResponse('There was an error attempting to query the database.', 500);
+            outputResponse('There was a database error, please try again later.', 500);
         }
 
-        $data = $stmt->get_result();
-
-        if (intval($data->num_rows) < 1) {
+        // If we do not have a result object something was incorrect.
+        $result = $stmt->get_result();
+        if (intval($result->num_rows) < 1) {
             outputResponse('Email or password does not match our records.', 400);
         }
+        $result = $result->fetch_assoc();
 
-        $data = $data->fetch_assoc();
-
-        $pass = $Sanitize->pepperPassword($pass);
-
-        if (!password_verify($pass, $data['password'])) {
+        // Add the sites pepper to the password and check its validity.
+        $password = $Sanitize->pepperPassword($pass);
+        if (!password_verify($password, $result['password'])) {
             outputResponse('Email or password does not match our records.', 400);
         }
 
         // TODO: Perform OTP first instead of logging in if that is enabled.
+        $stmt->free_result();
+        $db->close();
 
+        // Setup session and redirect.
         global $Session;
-
-        $Session->userId   = $data['id'];
+        $Session->userId   = $result['id'];
         $Session->loggedIn = true;
-
         outputResponse('Signed in successfully.', 200);
     }
 

@@ -19,8 +19,10 @@ if (!defined('SITE_ROOT')) {
 $Database = new Controller\Core\Database();
 $Page     = new Controller\Core\Page();
 $Router   = new Controller\Core\Router();
-$Sanitize = new Module\Core\Sanitizer();
 $Session  = Controller\Core\Session::getInstance();
+
+$Sanitize = new Module\Core\Sanitizer();
+$User     = new Module\Core\User();
 
 $Router->route('', 'Controller\Core\Page\Home');
 $Router->route('/', 'Controller\Core\Page\Home');

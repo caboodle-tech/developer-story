@@ -54,7 +54,7 @@ class Router {
         foreach ($parts as $part) {
             if (strpos($part, '*') !== false) {
                 $regex .= '.*';
-            } else if ($part[0] === ':') {
+            } else if (isset($part[0]) && $part[0] === ':') {
                 $regex .= '[\w\d\s\-\_]{1,}?';
             } else {
                 $regex .= $part;
@@ -110,7 +110,7 @@ class Router {
             $uri = $this->appUrl;
         }
         $parts = explode('/', $uri);
-        if (strpos($route, '*') === false) {
+        if (strpos($uri, '*') === false) {
             $index = 'R' . count($parts);
         }
         // Do we have any routes that match this routes length?
@@ -153,7 +153,7 @@ class Router {
         $trimmedUrl = '';
         $params     = (object) [];
         foreach ($routeParts as $index => $value) {
-            if ($value[0] === ':') {
+            if (isset($value[0]) && $value[0] === ':') {
                 // This route part should be considered a parameter.
                 $name          = substr($value, 1);
                 $params->$name = $uriParts[$index];
@@ -181,7 +181,7 @@ class Router {
         // if (strpos($route, '*') === false) {
             $index = 'R' . count($parts);
         // }
-        if (!$this->routes->$index) {
+        if (!isset($this->routes->$index)) {
             $this->routes->$index = [];
         }
         array_push(

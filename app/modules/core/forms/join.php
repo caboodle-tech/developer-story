@@ -25,6 +25,7 @@ class Join extends \Module\Core\Forms {
         // Do not process request if we are not supposed to.
         parent::processRequest();
         
+        // Check that profile information is all valid:
         $fname  = trim($_POST['first-name']);
         $mname  = trim($_POST['middle-name']);
         $lname  = trim($_POST['last-name']);
@@ -61,36 +62,38 @@ class Join extends \Module\Core\Forms {
             outputResponse('Passwords do not match.', 400);
         }
 
+        // Open a connection to the database and add this new user:
         global $Database;
         $db = $Database->connect();
 
-        if ($db === false) {
-            outputResponse('Could not connect to the database.', 500);
-        }
-
+        // Prep all the information for inserting into the database.
         $id    = $Database->newId();
         $fname = trim($fname);
         $mname = trim($mname);
         $lname = trim($lname);
         $email = strip_tags($email1);
         $pass  = $Sanitize->hashPassword($Sanitize->pepperPassword($pass1));
-
+        
+        // Make sure this user does not exist first:
         $stmt = $db->prepare("SELECT COUNT(email) AS count FROM `user` WHERE `email`=?;");
         $stmt->bind_param('s', $email);
         $stmt->execute();
 
         if ($stmt->errno) {
             // TODO: log this error $stmt->error;
-            outputResponse('There was an error attempting to query the database.', 500);
+            outputResponse('There was a database error, please try again later.', 500);
         }
 
-        $count = $stmt->get_result()->fetch_assoc();
-        if (intval($count['count']) > 0) {
+        $result = $stmt->get_result()->fetch_assoc();
+        if (intval($result['count']) > 0) {
             outputResponse('User already exists.', 409);
         }
+        $stmt->free_result();
         
+        // All checks have passed, insert the user into the database:
         $db->begin_transaction();
-
+        
+        // User table.
         $stmt = $db->prepare("INSERT INTO `user` (`id`, `email`, `password`) VALUES (?, ?, ?);");
         $stmt->bind_param('sss', $id, $email, $pass);
         $stmt->execute();
@@ -100,8 +103,8 @@ class Join extends \Module\Core\Forms {
             $db->rollback();
             outputResponse('There was an error attempting to save the user.', 500);
         }
-        $stmt->free_result();
 
+        // User Profile table.
         $stmt = $db->prepare("INSERT INTO `user_profile` (`id`, `first_name`, `middle_name`, `last_name`) VALUES (?, ?, ?, ?);");
         $stmt->bind_param('ssss', $id, $fname, $mname, $lname);
         $stmt->execute();
@@ -111,8 +114,8 @@ class Join extends \Module\Core\Forms {
             $db->rollback();
             outputResponse('There was an error attempting to save the user profile.', 500);
         }
-        $stmt->free_result();
 
+        // User Connections table.
         $stmt = $db->prepare("INSERT INTO `user_connections` (`id`, `connected`) VALUES (?, '{\"connections\": {}}');");
         $stmt->bind_param('s', $id);
         $stmt->execute();
@@ -122,15 +125,15 @@ class Join extends \Module\Core\Forms {
             $db->rollback();
             outputResponse('There was an error attempting to save the user connections.', 500);
         }
-        $stmt->free_result();
 
+        // Everything was successful, commit the queries and close the database connection.
+        $stmt->free_result();
         $db->commit();
 
+        // Login the user immediately and redirect them to their dashboard.
         global $Session;
-
         $Session->userId   = $id;
         $Session->loggedIn = true;
-
         outputResponse('User created successfully.', 201);
     }
 

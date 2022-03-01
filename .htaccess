@@ -13,7 +13,7 @@ Options -Indexes
     # Only needing for local develoment in my case.
     RewriteBase /BU/cs-602/developer-story/
     # If nothing or an index page is requested go to `public/index.php` and stop processing.
-    RewriteRule ^(\/||.*index\..*)$ public/index.php [L,QSA]
+    RewriteRule ^(\/||.*index\..*)$ public/index.php?p= [L,QSA]
     # If the URL already contains the `public/` directory go to URL and stop processing.
     RewriteRule ^(.*public\/.*)$ $1 [L,QSA]
     # If it appears this URL is for a resource (JS, CSS, etc.) prefix with `public/`.

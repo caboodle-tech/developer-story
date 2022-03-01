@@ -1,10 +1,11 @@
 <?php
-$User = requireToBeLoggedIn();
+global $User;
+$User->mustBeLoggedIn();
 
 require absPath('app/views/core/head.phtml');
 require absPath('app/views/core/header.phtml');
 ?>
-<form method="post" action="./form/profile" id="profile-container" data-load="profileLoad" data-reload="true" data-disabled="true">
+<form method="post" action="./form/profile" id="profile-container" data-handler="profile" data-reload="true" data-disabled="true">
     <div id="profile-pic-container">
         <div class="frame">
 <?php
@@ -45,7 +46,7 @@ if (!empty($User->profilePicture)) {
             </div>
         </div>
         <div class="row">
-            <button type="button" is="button-form">
+            <button type="button" is="submit-form">
                 <i class="fas fa-pencil"></i> Edit Account
                 <data>
                     <i class="fas fa-save"></i> Save Changes

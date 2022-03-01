@@ -158,31 +158,6 @@ if (!function_exists('outputResponse')) {
     }
 }
 
-if (!function_exists('requireToBeLoggedIn')) {
-    function requireToBeLoggedIn() {
-        global $Session;
-        if (!isset($Session->userId) && !isset($Session->loggedIn)) {
-            header('Location: ' . SITE_ROOT);
-            exit();
-        }
-        if ($Session->loggedIn !== true) {
-            header('Location: ' . SITE_ROOT);
-            exit();
-        }
-        global $Database;
-        $db = $Database->connect();
-        $id = $Session->userId;
-        $result = $db->query("SELECT u.id, u.email, up.first_name AS fname, up.middle_name AS mname, up.last_name AS lname, up.vanity, up.vanity_set_date AS vanityChanged, up.profile_picture AS profilePicture, uc.connected AS connections FROM user AS u LEFT JOIN user_profile AS up ON u.id=up.id LEFT JOIN user_connections AS uc ON u.id=uc.id WHERE u.id='$id';");
-        $result = $result->fetch_assoc();
-        $db->close();
-
-        $user              = (object) $result;
-        $user->connections = json_decode($user->connections);
-        $user->connections = $user->connections->connections;
-        return $user;
-    }
-}
-
 if (!function_exists('siteRoot')) {
     /**
      * Determine the sites root URL. Normally this is just the domain name but
@@ -203,10 +178,19 @@ if (!function_exists('siteRoot')) {
         if (isset($_SERVER['HTTP_HOST'])) {
             $host = $_SERVER['HTTP_HOST'];
         }
-        $host .= '/';
         // Determine any additional path.
         $path = $_SERVER['PHP_SELF'];
         $path = htmlspecialchars(substr($path, 0, stripos($path, 'public/')));
+        // Always end with a forward slash.
+        if (strlen($path) > 0) {
+            if ($path[strlen($path) - 1] !== '/') {
+                $path .= '/';
+            }
+        } else {
+            if ($host[strlen($host) - 1] !== '/') {
+                $host .= '/';
+            }
+        }
         // Sites root URL not including the public directory.
         return $protocol . $host . $path;
     }

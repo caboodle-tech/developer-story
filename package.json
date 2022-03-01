@@ -1,8 +1,10 @@
 {
   "devDependencies": {
+    "chokidar": "^3.5.3",
     "eslint": "^8.8.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
-    "sass": "^1.49.7"
+    "sass": "^1.49.7",
+    "uglify-js": "^3.15.2"
   }
 }

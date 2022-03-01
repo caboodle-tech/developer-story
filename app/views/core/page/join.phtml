@@ -19,7 +19,7 @@ require absPath('app/views/core/header.phtml');
         </p>
     </li>
 </ul>
-<form method="post" action="./form/join" data-load="joinLoad" data-redirect="./dashboard" autocomplete="off">
+<form method="post" action="./form/join" data-handler="join" data-redirect="./dashboard" autocomplete="off">
     <h3>Name</h3>
     <div class="row">
         <input autocomplete="new-password" placeholder="First Name" type="text" name="first-name" aria-label="First Name" required>
@@ -37,7 +37,7 @@ require absPath('app/views/core/header.phtml');
         <input autocomplete="new-password" placeholder="Retype Password" type="password" name="password-2" aria-label="Retype Password" required>
     </div>
     <div class="row">
-        <button type="button" is="button-form">
+        <button type="button" is="submit-form">
             Create Account
         </button>
     </div>

@@ -47,9 +47,10 @@ class Oauth extends \Module\Core\Forms {
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 
-            $code = $_GET['code'];
-            $url  = SITE_ROOT . 'api/so_oauth';
-            $data = "client_id=22934&client_secret=1QrJc2frhmWdR*Y77pQGXQ((&code=$code&redirect_uri=$url";
+            $code   = $_GET['code'];
+            $url    = SITE_ROOT . 'api/so_oauth';
+            $secret = STACKOVERFLOW;
+            $data   = "client_id=22934&client_secret=$secret&code=$code&redirect_uri=$url";
             curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 
             $json = json_decode(curl_exec($curl));
@@ -77,14 +78,14 @@ class Oauth extends \Module\Core\Forms {
         }
 
         if (isset($_POST['access_token'])) {
-            // Require login here...
-            $User = requireToBeLoggedIn();
-            //TODO: Rewrite this whole $User concept and turn into a reliable global
+            echo 'YES';
+            global $User;
+            $User->mustBeLoggedIn();
             print_r($_POST);
             die();
         }
 
-        redirect(SITE_ROOT . 'dashboard');
+        // redirect(SITE_ROOT . 'dashboard');
     }
 
 }

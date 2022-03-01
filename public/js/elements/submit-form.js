@@ -1,11 +1,9 @@
 /* eslint-disable no-undef */
-class ButtonForm extends HTMLButtonElement {
+class SubmitForm extends HTMLButtonElement {
 
     altText = '';
 
-    errorCallback = '';
-
-    loadCallback = '';
+    handler = '';
 
     form = null;
 
@@ -20,8 +18,26 @@ class ButtonForm extends HTMLButtonElement {
         });
     }
 
-    error(evt) {
-        console.error(evt.target.responseText);
+    enctype() {
+        if (this.form) {
+            switch (this.form.enctype) {
+                case 'application/x-www-form-urlencoded':
+                    return 'FORM';
+                case 'multipart/form-data':
+                    return 'FILE';
+                case 'text/plain':
+                    return 'PLAIN';
+                default:
+                    // eslint-disable-next-line no-case-declarations
+                    const inputs = this.form.querySelectorAll('input');
+                    for (let i = 0; i < inputs.length; i++) {
+                        if (inputs[i].type.toUpperCase() === 'FILE') {
+                            return 'FILE';
+                        }
+                    }
+            }
+        }
+        return 'FORM';
     }
 
     getBoolean(check) {
@@ -44,13 +60,6 @@ class ButtonForm extends HTMLButtonElement {
         });
     }
 
-    load() {
-        if (this.form.dataset.reload) {
-            window.location.reload();
-
-        }
-    }
-
     lockForm() {
         this.form.reset();
         const inputs = this.form.querySelectorAll('input');
@@ -67,11 +76,8 @@ class ButtonForm extends HTMLButtonElement {
 
     setup() {
         this.form = this.closest('form');
-        if (this.form.dataset.error) {
-            this.errorCallback = this.form.dataset.error;
-        }
-        if (this.form.dataset.load) {
-            this.loadCallback = this.form.dataset.load;
+        if (this.form.dataset.handler) {
+            this.handler = this.form.dataset.handler;
         }
 
         const data = this.querySelector('data');
@@ -113,23 +119,33 @@ class ButtonForm extends HTMLButtonElement {
             if (!this.form.reportValidity()) {
                 return;
             }
-            const { method } = this.form;
-            const { action } = this.form;
-            const xhr = new XMLHttpRequest();
-            const data = new FormData(this.form);
-            if (Handlers[this.errorCallback]) {
-                xhr.addEventListener('error', Handlers[this.errorCallback]);
-            } else {
-                xhr.addEventListener('error', this.error);
-            }
-            if (Handlers[this.loadCallback]) {
-                xhr.addEventListener('load', Handlers[this.loadCallback]);
-            } else {
-                xhr.addEventListener('load', this.load);
-            }
-            xhr.form = this.form; // Reference the form in the XHR object.
-            xhr.open(method, action);
-            xhr.send(data);
+
+            const options = {
+                contentType: this.enctype(),
+                method: this.form.method
+            };
+
+            const req = new FetchIt(options);
+            req.setBody(new FormData(this.form));
+            req.fetch(this.form.action, { form: this.form })
+                .then((resp) => {
+                    if (Handlers[this.handler]) {
+                        Handlers[this.handler](resp);
+                    } else if (this.form.dataset.reload) {
+                        window.location.reload();
+                    } else {
+                        // eslint-disable-next-line no-console
+                        console.log('Form request was successful but there was no handler for the response.', resp);
+                    }
+                })
+                .catch((error) => {
+                    if (Handlers[this.handler]) {
+                        Handlers[this.handler](error);
+                    } else {
+                        // eslint-disable-next-line no-console
+                        console.error('There has been a problem with your fetch operation:', error);
+                    }
+                });
         }
     }
 
@@ -152,4 +168,4 @@ class ButtonForm extends HTMLButtonElement {
 
 }
 
-customElements.define('button-form', ButtonForm, { extends: 'button' });
+customElements.define('submit-form', SubmitForm, { extends: 'button' });

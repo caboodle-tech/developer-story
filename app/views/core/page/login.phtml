@@ -2,7 +2,7 @@
 require absPath('app/views/core/head.phtml');
 require absPath('app/views/core/header.phtml');
 ?>
-<form method="post" action="./form/login" data-load="loginLoad" data-redirect="./dashboard">
+<form method="post" action="./form/login" data-handler="login" data-redirect="./dashboard">
     <div class="row">
         <img src="images/icon-logo.svg" title="Dev Story" alt="Dev Story icon logo">
     </div>
@@ -13,7 +13,7 @@ require absPath('app/views/core/header.phtml');
         <input placeholder="Password" type="password" name="password" aria-label="Password" required>
     </div>
     <div class="row">
-        <button type="button" is="button-form">
+        <button type="button" is="submit-form">
             Login
         </button>
     </div>

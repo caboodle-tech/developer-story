@@ -7,6 +7,7 @@ namespace Controller\Core;
 
 class Database {
 
+    private $connected  = false;
     private $connection = null;
     private $settings   = [];
 
@@ -36,20 +37,14 @@ class Database {
     }
 
     /**
-     * When this class is being destructed make sure the database connection is closed. 
-     */
-    public function __destruct() {
-        $this->close();
-    }
-
-    /**
      * Close the database connection.
      * 
      * @return void
      */
     public function close() {
-        if ($this->$connection) {
-            $this->$connection->close();
+        if ($this->connected === true) {
+            $this->connected  = false;
+            $this->connection = null;
         }
     }
 
@@ -59,6 +54,10 @@ class Database {
      * @return object|boolean The `mysqli` connection object or false if the connection could not be opened.
      */
     public function connect() {
+        if ($this->connected && !empty($this->connection)) {
+            return $this->connection;
+        }
+
         $host = $this->settings['host'];
         $user = $this->settings['username'];
         $pass = $this->settings['password'];
@@ -67,18 +66,21 @@ class Database {
         $sock = $this->settings['socket'];
 
         if (!empty($this->settings['port']) && !empty($this->settings['socket'])) {
-            $connection = @new \mysqli($host, $user, $pass, $db, $port, $sock);
+            $connection = @new Sqli($host, $user, $pass, $db, $port, $sock);
         } else if (!empty($this->settings['port'])) {
-            $connection = @new \mysqli($host, $user, $pass, $db, $port);
+            $connection = @new Sqli($host, $user, $pass, $db, $port);
         } else {
-            $connection = @new \mysqli($host, $user, $pass, $db);
+            $connection = @new Sqli($host, $user, $pass, $db);
         }
         
         if ($connection->connect_errno) {
             // TODO: Log this: $connection->connect_error;
-            return false;
+            outputResponse('Could not connect to the database.', 500);
         }
 
+        $connection->registerObserver($this);
+
+        $this->connected  = true;
         $this->connection = $connection;
 
         return $connection;
