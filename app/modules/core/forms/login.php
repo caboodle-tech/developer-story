@@ -70,7 +70,12 @@ class Login extends \Module\Core\Forms {
         }
 
         // TODO: Perform OTP first instead of logging in if that is enabled.
+        
+        // Update the users last seen date and close database connection.
         $stmt->free_result();
+        $stmt->prepare("UPDATE user SET last_seen=CURRENT_TIMESTAMP WHERE id=?;");
+        $stmt->bind_param('s', $result['id']);
+        $stmt->execute();
         $db->close();
 
         // Setup session and redirect.
