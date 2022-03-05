@@ -4,7 +4,7 @@
  * 
  * @see https://www.php.net/manual/en/function.session-start.php#102460
  */
-namespace Controller\Core;
+namespace Module\Core;
 
 class Session {
 

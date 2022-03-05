@@ -3,7 +3,7 @@
  * The Database controller for the application.
  */
 
-namespace Controller\Core;
+namespace Module\Core;
 
 class Database {
 

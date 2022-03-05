@@ -1,6 +1,6 @@
 <?php
 
-namespace Controller\Core;
+namespace Module\Core;
 
 class Sqli extends \mysqli {
 

@@ -16,12 +16,12 @@ if (!defined('SITE_ROOT')) {
     define('SITE_ROOT', siteRoot());
 }
 
-$Database = new Controller\Core\Database();
-$Page     = new Controller\Core\Page();
-$Router   = new Controller\Core\Router();
-$Session  = Controller\Core\Session::getInstance();
+$Page   = new Controller\Core\Page();
+$Router = new Controller\Core\Router();
 
+$Database = new Module\Core\Database();
 $Sanitize = new Module\Core\Sanitizer();
+$Session  = Module\Core\Session::getInstance();
 $User     = new Module\Core\User();
 
 $Router->route('', 'Controller\Core\Page\Home');
